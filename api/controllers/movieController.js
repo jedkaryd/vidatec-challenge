@@ -29,26 +29,28 @@ exports.upload_csv = (req, res) => {
 const mapMovies = (data) => {
   const title = data.titulo;
 
-  Movie.find({ title: title })
-  .then((movie) => {
-    if (movie.length > 0) {
-      console.log(`Duplicated movie: ${movie}, data title: ${title}`)
-      return;
-    }
+  Movie.findOne({ title: title })
+    .then((movie) => {
+      if (movie != null) {
+        const error = new Error(`Duplicated movie: ${movie}, data title: ${title}`)
+        return Promise.reject(error);
+      }
 
-    const newMovie = new Movie({
-      title: data.titulo,
-      genre: data.genero,
-      year: data.año,
-      director: data.director,
-      actors: data.actores
-    });
+      const newMovie = new Movie({
+        title: data.titulo,
+        genre: data.genero,
+        year: data.año,
+        director: data.director,
+        actors: data.actores
+      });
 
-    newMovie.save(function(err, doc) {
-      if (err) return console.error(err);
-      console.log(`Document succussfully inserted! ${doc.title}`);
-    });
-  }).catch((err) => {
-    console.log(`Error mapping movies ${err}`);
-  })
+      newMovie.save()
+        .then(() => {
+          console.log(`Document succussfully inserted! ${doc.title}`);
+        })
+        .catch((err) => console.log('Error while saving document'));
+    })
+    .catch((err) => {
+      console.log(`Error mapping movies ${err}`);
+    })
 }
