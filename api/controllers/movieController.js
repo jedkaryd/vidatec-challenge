@@ -29,6 +29,39 @@ exports.upload_csv = (req, res) => {
     .on('error', err => res.end(err));
 };
 
+exports.find_one = (req, res) => {
+  const id = req.params.id;
+
+  Movie.findById(id, (err, movie) =>  {
+    if (err) res.send(err);
+    if (movie == null) res.status(404).send('Movie not found.');
+
+    res.json(movie);
+  })
+};
+
+exports.update = (req, res) => {
+  const id = req.params.id;
+
+  Movie.findByIdAndUpdate(id, req.body, { new: true }, (err, movie) => {
+    if (err) res.send(err);
+    if (movie == null) res.status(404).send('Movie not found.');
+
+    res.json(movie);
+  });
+};
+
+exports.delete = (req, res) => {
+  const id = req.params.id;
+
+  Movie.findByIdAndDelete(id, (err, movie) => {
+    if (err) res.send(err);
+    if (movie == null) res.status(404).send('Movie not found.');
+
+    res.send('Movie successfully deleted.');
+  });
+};
+
 const mapMovies = (data) => {
   const title = data.titulo;
 

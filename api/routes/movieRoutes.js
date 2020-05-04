@@ -11,4 +11,9 @@ module.exports = function(app) {
   app.route('/movies')
     .get(movie.list_all_movies)
     .post(upload.single('file'), movie.upload_csv)
+
+  app.route('/movies/:id')
+    .get(movie.find_one)
+    .put(movie.update)
+    .delete(movie.delete)
 };
