@@ -7,10 +7,13 @@ const fs = require('fs');
 const Movie = mongoose.model('Movies');
 
 exports.list_all_movies = (req, res) => {
-  Movie.find({}, (err, movies) => {
-    if (err) res.send(err);
-    res.json(movies);
-  });
+  const page = parseInt(req.query.page) || 1;
+  const limit = parseInt(req.query.limit) || 5;
+  const match = req.query.title != undefined ? { title: req.query.title } : {}
+
+  Movie.paginate(match, { page: page, limit: limit })
+    .then(response => res.send(response))
+    .catch(err => res.send(err));
 };
 
 exports.upload_csv = (req, res) => {
@@ -23,7 +26,7 @@ exports.upload_csv = (req, res) => {
       fs.unlinkSync(req.file.path);
       res.send('File uploaded');
     })
-    .on('error', (err) => res.end(err));
+    .on('error', err => res.end(err));
 };
 
 const mapMovies = (data) => {
@@ -48,9 +51,7 @@ const mapMovies = (data) => {
         .then(() => {
           console.log(`Document succussfully inserted! ${doc.title}`);
         })
-        .catch((err) => console.log('Error while saving document'));
+        .catch(err => console.log('Error while saving document'));
     })
-    .catch((err) => {
-      console.log(`Error mapping movies ${err}`);
-    })
+    .catch(err => console.log(`Error mapping movies ${err}`));
 }

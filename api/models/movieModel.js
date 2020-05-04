@@ -1,10 +1,11 @@
 
 'use strict';
 
-var mongoose = require('mongoose');
-var Schema = mongoose.Schema;
+const mongoose = require('mongoose');
+const mongoosePaginate = require('mongoose-paginate');
+const Schema = mongoose.Schema;
 
-var MovieSchema = new Schema({
+const MovieSchema = new Schema({
   title: {
     type: String,
     required: 'Enter the title of the movie',
@@ -25,5 +26,7 @@ var MovieSchema = new Schema({
     }]
   }
 });
+
+MovieSchema.plugin(mongoosePaginate);
 
 module.exports = mongoose.model('Movies', MovieSchema);
