@@ -7,6 +7,7 @@ const PORT = process.env.PORT || 3000;
 const NODE_ENV = process.env.NODE_ENV || 'development';
 const routes = require('./api/routes/movieRoutes');
 const mongoose = require('mongoose');
+const cors = require('cors');
 
 mongoose.connect('mongodb://localhost/Moviesdb', { useNewUrlParser: true, useUnifiedTopology: true }, (err, client) => {
   if (err) return console.error(err);
@@ -19,6 +20,7 @@ app.set('port', PORT);
 app.set('env', NODE_ENV);
 app.use(logger('tiny'));
 app.use(bodyParser.json());
+app.use(cors());
 
 routes(app);
 
